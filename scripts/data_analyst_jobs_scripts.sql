@@ -7,7 +7,7 @@ FROM data_analyst_jobs
 SELECT count(*)
 FROM data_analyst_jobs
 
---answer: 1793 rows 
+--answer 1: 1793 rows 
 
 
 --Q2.) Write a query to look at just the first 10 rows. What company is associated with the job posting on the 10th row?
@@ -16,7 +16,7 @@ SELECT *
 FROM data_analyst_jobs
 LIMIT 10
 
---answer: ExxonMobil
+--answer 2: ExxonMobil
 
 
 --Q3A.) How many postings are in Tennessee? Q3B.) How many are there in either Tennessee or Kentucky?
@@ -63,3 +63,85 @@ GROUP BY company, state
 ORDER BY avg_rating DESC
 
 --answer 6.) TN
+
+
+--Q7.)Select unique job titles from the data_analyst_jobs table. How many are there?
+
+SELECT COUNT(DISTINCT(title))
+FROM data_analyst_jobs
+
+--answer 7: 881 unique job titles
+
+
+--Q8.) How many unique job titles are there for California companies?
+
+SELECT COUNT(DISTINCT(title))
+FROM data_analyst_jobs
+WHERE location = 'CA'
+
+--answer 8: 230 unieuq job titles for CA
+
+SELECT *
+FROM data_analyst_jobs
+
+
+--Q9.) Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more that 5000 reviews across all locations?
+
+SELECT company, AVG(star_rating)
+FROM data_analyst_jobs
+GROUP BY company
+HAVING SUM(review_count) > 5000
+
+--answer 9: 71 companies 
+
+
+--Q10.) Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
+
+SELECT company, AVG(star_rating)
+FROM data_analyst_jobs
+GROUP BY company
+HAVING SUM(review_count) > 5000
+ORDER BY AVG(star_rating) DESC;
+
+--answer 10: Google with 4.3 avg ratings
+
+
+--Q11.) Find all the job titles that contain the word ‘Analyst’. How many different job titles are there?
+
+SELECT title
+FROM data_analyst_jobs
+WHERE title LIKE '%Analyst%'
+
+--answer: 1000 job titles containing analyst
+
+
+--Q12.) How many different job titles do not contain either the word ‘Analyst’ or the word ‘Analytics’? What word do these positions have in common?
+
+SELECT title
+FROM data_analyst_jobs
+WHERE title NOT ILIKE '%Analyst%'
+AND title NOT ILIKE '%Analytics%'
+
+--answer12: 4 jobs without Analyst or Analytics. All the 4 wordsd have Tableau in common.
+
+
+SELECT *
+FROM data_analyst_jobs
+
+--BONUS.) You want to understand which jobs requiring SQL are hard to fill. Find the number of jobs by industry (domain) that require SQL and have been posted longer than 3 weeks.
+
+--Disregard any postings where the domain is NULL.
+--Order your results so that the domain with the greatest number of hard to fill jobs is at the top.
+--Which three industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
+
+SELECT COUNT(title),domain
+FROM data_analyst_jobs
+WHERE skill LIKE '%SQL%'
+AND domain IS NOT NULL
+AND days_since_posting > 21
+GROUP BY domain
+ORDER BY COUNT(title) DESC
+LIMIT 4;
+
+--answer bonus: Top 4 - Internt and Software, Banks and Financial Services, Consulting and Business Services, and Health Care. 
+--answer bonus: 232 jobs been posted for more than 3 weeks of the top 4 domains. 
