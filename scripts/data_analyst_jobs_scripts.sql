@@ -42,7 +42,7 @@ FROM data_analyst_jobs
 WHERE location IN ('TN')
 AND star_rating > 4
 
---answer 4.) 3 postins in TN above 4 star rating
+--answer 4.) 3 postings in TN above 4 star rating
 
 
 --Q5.) How many postings in the dataset have a review count between 500 and 1000?
@@ -57,12 +57,13 @@ BETWEEN 500 AND 1000
 
 --Q6.)Show the average star rating for companies in each state. The output should show the state as state and the average rating for the state as avg_rating. Which state shows the highest average rating?
 
-SELECT company, AVG(star_rating) AS avg_rating, location AS state
+SELECT AVG(star_rating) AS avg_rating, location AS state
 FROM data_analyst_jobs
-GROUP BY company, state
+WHERE star_rating IS NOT NULL
+GROUP BY location
 ORDER BY avg_rating DESC
 
---answer 6.) TN
+--answer 6.) NE
 
 
 --Q7.)Select unique job titles from the data_analyst_jobs table. How many are there?
@@ -81,38 +82,46 @@ WHERE location = 'CA'
 
 --answer 8: 230 unieuq job titles for CA
 
+
+
+
 SELECT *
 FROM data_analyst_jobs
+
+
+
 
 
 --Q9.) Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more that 5000 reviews across all locations?
 
 SELECT company, AVG(star_rating)
 FROM data_analyst_jobs
+WHERE review_count > 5000 
+AND company IS NOT NULL
 GROUP BY company
-HAVING SUM(review_count) > 5000
 
---answer 9: 71 companies 
+--answer 9: 40 companies 
 
 
 --Q10.) Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
 
 SELECT company, AVG(star_rating)
 FROM data_analyst_jobs
+WHERE review_count > 5000
+AND company IS NOT NULL
 GROUP BY company
-HAVING SUM(review_count) > 5000
 ORDER BY AVG(star_rating) DESC;
 
---answer 10: Google with 4.3 avg ratings
+--answer 10: six-way tie
 
 
 --Q11.) Find all the job titles that contain the word ‘Analyst’. How many different job titles are there?
 
-SELECT title
+SELECT DISTINCT(title)
 FROM data_analyst_jobs
-WHERE title LIKE '%Analyst%'
+WHERE title ILIKE '%Analyst%'
 
---answer: 1000 job titles containing analyst
+--answer: 774 job titles containing analyst
 
 
 --Q12.) How many different job titles do not contain either the word ‘Analyst’ or the word ‘Analytics’? What word do these positions have in common?
@@ -136,7 +145,7 @@ FROM data_analyst_jobs
 
 SELECT COUNT(title),domain
 FROM data_analyst_jobs
-WHERE skill LIKE '%SQL%'
+WHERE skill ILIKE '%SQL%'
 AND domain IS NOT NULL
 AND days_since_posting > 21
 GROUP BY domain
